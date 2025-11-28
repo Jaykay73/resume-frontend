@@ -274,7 +274,7 @@ export default function Home() {
               <div className="bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 rounded-3xl p-10 backdrop-blur-md">
                  <div className="flex items-center gap-3 mb-8">
                     <Sparkles className="text-purple-400" size={24} />
-                    <h3 className="text-2xl font-bold">AI Recommendations</h3>
+                    <h3 className="text-2xl font-bold">AI recommended bullet points to add to your resume</h3>
                  </div>
 
                  <div className="space-y-6">
@@ -303,7 +303,7 @@ export default function Home() {
                  </div>
 
                  <div className="mt-10 pt-8 border-t border-white/5">
-                    <h4 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">Cover Letter Intro Draft</h4>
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">Start your Cover Letter like this</h4>
                     <p className="text-neutral-400 italic text-lg leading-relaxed font-serif">
                        "{result.ai_suggestions?.cover_letter_intro || "No draft available."}"
                     </p>
