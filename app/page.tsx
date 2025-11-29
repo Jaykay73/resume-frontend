@@ -272,44 +272,67 @@ export default function Home() {
 
               {/* AI ADVICE */}
               <div className="bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 rounded-3xl p-10 backdrop-blur-md">
+                 
+                 {/* PROJECTS SECTION */}
                  <div className="flex items-center gap-3 mb-8">
                     <Sparkles className="text-purple-400" size={24} />
-                    <h3 className="text-2xl font-bold">AI recommended bullet points to add to your resume</h3>
+                    <h3 className="text-2xl font-bold">Recommended Portfolio Projects</h3>
                  </div>
 
-                 <div className="space-y-6">
-                    {/* Safe Parsing of Bullets */}
+                 <div className="space-y-6 mb-12">
                     {(() => {
                         const suggestions = result.ai_suggestions || {};
-                        const bullets = suggestions.suggested_bullets || suggestions.bullets || [];
+                        // UPDATED: Look for 'suggested_projects' first
+                        const projects = suggestions.suggested_projects 
+                                      || suggestions.suggested_bullets 
+                                      || [];
                         
-                        return bullets.map((bullet: string, i: number) => (
+                        if (projects.length === 0) return <div className="text-neutral-500">No suggestions generated.</div>;
+
+                        return projects.map((project: string, i: number) => (
                            <motion.div 
                              key={i}
                              initial={{ opacity: 0, y: 10 }}
                              animate={{ opacity: 1, y: 0 }}
                              transition={{ delay: 0.5 + (i * 0.2) }}
-                             className="flex gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
+                             className="flex gap-4 p-5 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-colors"
                            >
-                              <div className="mt-1 min-w-[24px] h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-xs font-bold">
+                              <div className="mt-1 min-w-[28px] h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-sm font-bold shadow-[0_0_10px_rgba(168,85,247,0.2)]">
                                 {i + 1}
                               </div>
-                              <p className="text-neutral-300 leading-relaxed text-lg font-light">
-                                <TypewriterText text={bullet} delay={0.5 + (i * 1)} />
-                              </p>
+                              <div>
+                                <h4 className="text-purple-200 font-medium mb-1">Project Idea</h4>
+                                <p className="text-neutral-300 leading-relaxed text-md font-light">
+                                  <TypewriterText text={project} delay={0.5 + (i * 1)} />
+                                </p>
+                              </div>
                            </motion.div>
                         ));
                     })()}
                  </div>
 
-                 <div className="mt-10 pt-8 border-t border-white/5">
-                    <h4 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">Start your Cover Letter like this</h4>
-                    <p className="text-neutral-400 italic text-lg leading-relaxed font-serif">
-                       "{result.ai_suggestions?.cover_letter_intro || "No draft available."}"
-                    </p>
+                 {/* COVER LETTER SECTION */}
+                 <div className="pt-10 border-t border-white/10">
+                    <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-sm font-bold uppercase tracking-widest text-neutral-500 flex items-center gap-2">
+                           <FileText size={16} /> Generated Cover Letter
+                        </h4>
+                        <button 
+                           onClick={() => navigator.clipboard.writeText(result.ai_suggestions?.cover_letter)}
+                           className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                        >
+                           Copy to Clipboard
+                        </button>
+                    </div>
+                    
+                    <div className="p-8 bg-neutral-950/50 rounded-2xl border border-white/5 shadow-inner">
+                        <p className="text-neutral-300 text-md leading-loose font-serif whitespace-pre-line">
+                           {/* UPDATED: Look for 'cover_letter' key */}
+                           {result.ai_suggestions?.cover_letter || result.ai_suggestions?.cover_letter_intro || "No draft available."}
+                        </p>
+                    </div>
                  </div>
               </div>
-
             </motion.section>
           )}
         </AnimatePresence>
