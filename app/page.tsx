@@ -289,42 +289,48 @@ export default function Home() {
                         if (projects.length === 0) return <div className="text-neutral-500">No suggestions generated.</div>;
 
                         return projects.map((project: string, i: number) => {
-                           // 1. CLEANUP LOGIC (Mistral Fix)
-                           // Remove "Project Idea", "Project 1", newlines, and extra spaces
+                           // 1. NUCLEAR CLEANUP LOGIC
                            let cleanProject = project
-                             .replace(/Project Idea[:\s-]*/i, "") // Remove "Project Idea" header
-                             .replace(/Project \d+[:\s-]*/i, "") // Remove "Project 1" header
-                             .replace(/\n/g, " ")                 // Remove random newlines
-                             .replace(/\s+/g, " ")                // Collapse multiple spaces
+                             // Remove "Project Idea" or "Project 1" even if wrapped in ** or ##
+                             .replace(/^[\s\W\d]*Project (Idea|\d+)[:\s-]*/i, "") 
+                             // Remove all newlines to fix "broken" titles
+                             .replace(/\n/g, " ") 
+                             // Collapse multiple spaces
+                             .replace(/\s+/g, " ") 
                              .trim();
 
                            // 2. PARSING LOGIC
                            // Split by the first colon found
                            const splitIndex = cleanProject.indexOf(":");
-                           let title = "Project Idea";
+                           let title = "Recommended Project"; // Changed default just in case
                            let desc = cleanProject;
 
                            if (splitIndex !== -1) {
+                               // Take everything BEFORE the colon as the title
                                title = cleanProject.substring(0, splitIndex).replace(/\*\*/g, "").trim();
+                               // Take everything AFTER the colon as the description
                                desc = cleanProject.substring(splitIndex + 1).trim();
                            } else {
+                               // If no colon, try to assume the first few words are the title? 
+                               // Or just clean up the whole string.
                                desc = cleanProject.replace(/\*\*/g, "");
                            }
 
                            return (
                              <motion.div 
                                key={i}
-                               // ... rest of your styling ...
+                               initial={{ opacity: 0, y: 10 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               transition={{ delay: 0.5 + (i * 0.2) }}
                                className="flex gap-4 p-5 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-colors"
                              >
                                 <div className="mt-1 min-w-[28px] h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-sm font-bold shadow-[0_0_10px_rgba(168,85,247,0.2)]">
                                   {i + 1}
                                 </div>
                                 <div>
-                                  {/* RENDER BOLD TITLE */}
+                                  {/* Title is now clean */}
                                   <h4 className="text-purple-300 font-bold text-lg mb-1">{title}</h4>
                                   
-                                  {/* RENDER DESCRIPTION */}
                                   <p className="text-neutral-300 leading-relaxed text-md font-light">
                                     <TypewriterText text={desc} delay={0.5 + (i * 0.5)} />
                                   </p>
